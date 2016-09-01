@@ -78,6 +78,12 @@
         "description": "Administrator password for the virtual machines and the Active Directory domain"
       }
     },
+    "sourceImageVhdUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The Uri of the source image VHD"
+      }
+    },
     "vaultName": {
       "type": "string",
       "metadata": {
@@ -147,7 +153,7 @@
         ]
       }
     ],
-    "artifactsBaseUrl": "https://raw.githubusercontent.com/MsHpcPack/HPCPack2016Preview/master/newcluster-three-hns"
+    "artifactsBaseUrl": "https://raw.githubusercontent.com/sunbinzhu/HPCPack2016Preview/master/newcluster-three-hns"
   },
   "resources": [
     {
@@ -487,7 +493,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('artifactsBaseUrl'),'/domain-joined-vm.json')]",
+          "uri": "[concat(variables('artifactsBaseUrl'),'/domain-joined-vm-custom-image.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -506,16 +512,8 @@
           "vmSize": {
             "value": "[parameters('headNodeVMSize')]"
           },
-          "storageAccountName": {
-            "value": "[variables('storageAccountNameHN')]"
-          },
-          "imageReference": {
-            "value": {
-              "publisher": "MicrosoftWindowsServerHPCPack",
-              "offer": "WindowsServerHPCPack",
-              "sku": "TechnicalPreview",
-              "version": "latest"
-            }
+          "sourceImageVhdUri": {
+            "value": "[parameters('sourceImageVhdUri')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -683,7 +681,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('artifactsBaseUrl'),'/windowsnode-dsc.json')]",
+          "uri": "[concat(variables('artifactsBaseUrl'),'/windowsnode-dsc-custom-image.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -699,16 +697,8 @@
           "vmSize": {
             "value": "[parameters('computeNodeVMSize')]"
           },
-          "storageAccountName": {
-            "value": "[concat(variables('cnStorageAccountNamePrefix'), padLeft(string(div(copyIndex(), variables('nbrCNPerStorageAccount'))), 2, '0'))]"
-          },
-          "imageReference": {
-            "value": {
-              "publisher": "MicrosoftWindowsServerHPCPack",
-              "offer": "WindowsServerHPCPack",
-              "sku": "TechnicalPreview",
-              "version": "latest"
-            }
+          "sourceImageVhdUri": {
+            "value": "[parameters('sourceImageVhdUri')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"

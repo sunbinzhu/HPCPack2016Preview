@@ -1,7 +1,7 @@
 # Deploy an HPC cluster in Azure with Microsoft HPC Pack 2016 Preview
 Deploy an HPC cluster with three head nodes:
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMsHpcPack%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-three-hns%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsunbinzhu%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-three-hns%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
