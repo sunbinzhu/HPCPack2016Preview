@@ -10,13 +10,6 @@
         "description": "The name of the HPC cluster, also used as the host name prefix of the domain controller. It must contain between 3 and 12 characters with lowercase letters and numbers, and must start with a letter."
       }
     },
-    "privateDomainName": {
-      "type": "string",
-      "defaultValue": "hpc.local",
-      "metadata": {
-        "description": "The fully qualified domain name (FQDN) for the private domain forest which will be created by this template, for example 'hpc.local'."
-      }
-    },
     "sqlServerVMName": {
       "type": "string",
       "metadata": {
@@ -161,8 +154,6 @@
     "cnAvailabilitySetNumber": "[add(div(parameters('computeNodeNumber'), variables('nbrVMPerAvailabilitySet')), 1)]",
     "uniqueSuffix": "[uniqueString(variables('subnetRef'))]",
     "uniqueNicSuffix": "[concat('-nic-', variables('uniqueSuffix'))]",
-    "dcVMName": "[concat(parameters('clusterName'),'dc')]",
-    "nicNameDC": "[concat(variables('dcVMName'), variables('uniqueNicSuffix'))]",
     "WindowsServerSkus": {
       "WindowsServer2012R2": "2012-R2-Datacenter",
       "WindowsServer2016": "Windows-Server-Technical-Preview"
@@ -534,8 +525,6 @@
             "function": "InstallHpcHeadNode"
           },
           "configurationArguments": {
-            "DomainName": "[parameters('privateDomainName')]",
-            "NodeType": "HeadNode",
             "HeadNodeList": "[parameters('headNodeList')]",
             "SSLThumbprint": "[parameters('certThumbprint')]",
             "ClusterName": "[parameters('clusterName')]",
