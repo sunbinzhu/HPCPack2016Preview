@@ -664,6 +664,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "HNPreReqInstallCopy",
         "[concat('Microsoft.Resources/deployments/createDBServer', parameters('sqlServerVMName'))]"
       ],
       "properties": {
