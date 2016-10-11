@@ -618,17 +618,54 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('headNodes')[copyIndex()],'/installHeadNode')]",
+      "name": "[concat(variables('headNodes')[copyIndex(1)],'/installHeadNodePreReq')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "createHeadNodeCopy",
-        "[concat('Microsoft.Resources/deployments/createDBServer', parameters('sqlServerVMName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('headNodes')[copyIndex(1)])]"
       ],
       "copy": {
-        "name": "HNInstalls",
-        "count": "[length(variables('headNodes'))]"
+        "name": "HNPreReqInstallCopy",
+        "count": "[sub(length(variables('headNodes')), 1)]"
       },
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "configuration": {
+            "url": "[concat(variables('artifactsBaseUrl'),'/InstallHpcNode.ps1.zip')]",
+            "script": "InstallHpcNode.ps1",
+            "function": "InstallHpcNode"
+          },
+          "configurationArguments": {
+            "DomainName": "[parameters('privateDomainName')]",
+            "NodeType": "HeadNodePreReq",
+            "HeadNodeList": "[parameters('headNodeList')]",
+            "SetupPkgPath": "[parameters('SetupPackageUri')]",
+            "SSLThumbprint": "[parameters('certThumbprint')]",
+            "PostConfigScript": ""
+          }
+        },
+        "protectedSettings": {
+          "configurationArguments": {
+            "AdminCreds": {
+              "UserName": "[parameters('adminUsername')]",
+              "Password": "[parameters('adminPassword')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('headNodes')[0],'/installHeadNode')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/createDBServer', parameters('sqlServerVMName'))]"
+      ],
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
@@ -642,9 +679,8 @@
           },
           "configurationArguments": {
             "DomainName": "[parameters('privateDomainName')]",
-            "NodeType": "[variables('headNodeRoles')[copyIndex()]]",
             "HeadNodeList": "[parameters('headNodeList')]",
-            "SetupPkgUrl": "[parameters('SetupPackageUri')]",
+            "SetupPkgPath": "[parameters('SetupPackageUri')]",
             "SSLThumbprint": "[parameters('certThumbprint')]",
             "ClusterName": "[parameters('clusterName')]",
             "SQLServerInstance": "[parameters('sqlServerVMName')]",
@@ -756,7 +792,7 @@
                 "DomainName": "[parameters('privateDomainName')]",
                 "NodeType": "ComputeNode",
                 "HeadNodeList": "[parameters('headNodeList')]",
-                "SetupPkgUrl": "[parameters('SetupPackageUri')]",
+                "SetupPkgPath": "[parameters('SetupPackageUri')]",
                 "SSLThumbprint": "[parameters('certThumbprint')]",
                 "PostConfigScript": ""
               }
