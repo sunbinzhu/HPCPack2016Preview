@@ -5,7 +5,7 @@
 ### Deploy an HPC cluster with three head nodes in Azure
 Deploy an HPC cluster in Azure with one domain controller, one Database Server with SQL Server 2014 Standard version, three head nodes and a number of compute nodes.
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMsHpcPack%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-three-hns%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsunbinzhu%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-three-hns-daily%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
@@ -19,7 +19,7 @@ Deploy an HPC cluster in Azure with one domain controller, one Database Server w
 ### Deploy an HPC cluster with single head node in Azure
 Deploy an HPC cluster in Azure with an all-in-one head node and a number of compute nodes. The head node is with local databases (SQL server 2014 Express version) and acts as domain controller as well.
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMsHpcPack%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-single-hn%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsunbinzhu%2FHPCPack2016Preview%2Fmaster%2Fnewcluster-single-hn-daily%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
