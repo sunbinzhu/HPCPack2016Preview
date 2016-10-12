@@ -141,8 +141,8 @@
         ]
       }
     ],
-    "artifactsBaseUrl": "https://raw.githubusercontent.com/sunbinzhu/HPCPack2016Preview/master/newcluster-three-hns",
-    "singleHNBaseUrl": "https://raw.githubusercontent.com/sunbinzhu/HPCPack2016Preview/master/newcluster-single-hn"
+    "artifactsBaseUrl": "https://raw.githubusercontent.com/sunbinzhu/HPCPack2016Preview/master/newcluster-three-hns-daily",
+    "singleHNBaseUrl": "https://raw.githubusercontent.com/sunbinzhu/HPCPack2016Preview/master/newcluster-single-hn-daily"
   },
   "resources": [
     {
@@ -432,10 +432,10 @@
           },
           "imageReference": {
             "value": {
-              "publisher": "MicrosoftWindowsServerHPCPack",
-              "offer": "WindowsServerHPCPack",
-              "sku": "TechnicalPreview",
-              "version": "5.0.5670"
+              "publisher": "MicrosoftWindowsServer",
+              "offer": "WindowsServer",
+              "sku": "[variables('imgSku')]",
+              "version": "latest"
             }
           },
           "adminUsername": {
