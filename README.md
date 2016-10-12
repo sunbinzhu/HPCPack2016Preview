@@ -25,7 +25,7 @@ Deploy an HPC cluster in Azure with an all-in-one head node and a number of comp
 
 ## Pre-Requisites:
 
-A Personal Information Exchange(PFX) certificate is required to secure the communication between the HPC nodes. Before you deploy the cluster, you shall upload a PFX certificate to Azure Key Valut as a secret, see the [description of vaultCertificates.certificateUrl]( https://msdn.microsoft.com/en-us/library/mt163591.aspx#bk_vaultcert). The following PowerShell script is an example for your reference.
+Microsoft HPC Pack 2016 Technical Preview requires a Personal Information Exchange (PFX) certificate to secure the communication between the HPC nodes. Before deploying the HPC cluster, you shall upload the certificate to an Azure Key Vault as a secret, and remember the following information which will be used in deployment: key vault name, resource group name, secret Id, and certificate thumbprint. More details about uploading certificate to Azure Key Vault please see [description of vaultCertificates.certificateUrl]( https://msdn.microsoft.com/en-us/library/mt163591.aspx#bk_vaultcert), or you can refer to the PowerShell script as below.
 
     #Give the following values
     $VaultName = "mytestvault"
@@ -34,12 +34,19 @@ A Personal Information Exchange(PFX) certificate is required to secure the commu
     $location = "westus"
     $PfxFile = "c:\Temp\mytest.pfx"
     $Password = "yourpfxkeyprotectionpassword"
-
-    #Encode the PFX file as a base 64 string according to 
-    # https://msdn.microsoft.com/en-us/library/mt163591.aspx#bk_vaultcert
+    #Validate the pfx file
+    try {
+        $pfxCert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $PfxFile, $Password
+    }
+    catch [System.Management.Automation.MethodInvocationException]
+    {
+        throw $_.Exception.InnerException
+    }
+    $thumbprint = $pfxCert.Thumbprint
+    $pfxCert.Dispose()
+    # Create and encode the JSON object
     $pfxContentBytes = Get-Content $PfxFile -Encoding Byte
     $pfxContentEncoded = [System.Convert]::ToBase64String($pfxContentBytes)
-    # Create and encode the JSON object as a base 64 string.
     $jsonObject = @"
     {
     "data": "$pfxContentEncoded",
@@ -49,9 +56,17 @@ A Personal Information Exchange(PFX) certificate is required to secure the commu
     "@
     $jsonObjectBytes = [System.Text.Encoding]::UTF8.GetBytes($jsonObject)
     $jsonEncoded = [System.Convert]::ToBase64String($jsonObjectBytes)
-    # Convert the JSON to a secure string
-    $secret = ConvertTo-SecureString -String $jsonEncoded -AsPlainText -Force
-
     #Create an Azure key vault and upload the certificate as a secret
-    New-AzureRmKeyVault -VaultName $VaultName -ResourceGroupName $VaultRG -Location $location -EnabledForDeployment -EnabledForTemplateDeployment
-    Set-AzureKeyVaultSecret -VaultName $VaultName -Name $SecretName -SecretValue $secret
+    $secret = ConvertTo-SecureString -String $jsonEncoded -AsPlainText -Force
+    $rg = Get-AzureRmResourceGroup -Name $VaultRG -Location $location -ErrorAction SilentlyContinue
+    if($null -eq $rg)
+    {
+        $rg = New-AzureRmResourceGroup -Name $VaultRG -Location $location
+    }
+    $hpcKeyVault = New-AzureRmKeyVault -VaultName $VaultName -ResourceGroupName $VaultRG -Location $location -EnabledForDeployment -EnabledForTemplateDeployment
+    $hpcSecret = Set-AzureKeyVaultSecret -VaultName $VaultName -Name $SecretName -SecretValue $secret
+    "The following Information will be used in the deployment template"
+    "Vault Name             :   $VaultName"
+    "Vault Resource Group   :   $VaultRG"
+    "Certificate URL        :   $($hpcSecret.Id)"
+    "Certificate Thumbprint :   $thumbprint"
